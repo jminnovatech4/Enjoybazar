@@ -1,4 +1,4 @@
-package com.jminnovatech.enjoybazar.data.remote.model
+package com.jminnovatech.enjoybazar.data.model.auth
 
 data class LoginRequest(
     val login: String,

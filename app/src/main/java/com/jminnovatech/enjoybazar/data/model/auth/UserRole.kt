@@ -1,4 +1,4 @@
-package com.jminnovatech.enjoybazar.domain.model
+package com.jminnovatech.enjoybazar.data.model.auth
 
 enum class UserRole {
     COMPANY,

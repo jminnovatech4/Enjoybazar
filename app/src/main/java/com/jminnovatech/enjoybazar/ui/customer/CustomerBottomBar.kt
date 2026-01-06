@@ -1,64 +1,32 @@
 package com.jminnovatech.enjoybazar.ui.customer
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBalanceWallet
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+
+import androidx.navigation.NavHostController
 
 @Composable
-fun CustomerBottomBar() {
-
+fun CustomerBottomBar(nav: NavHostController) {
     NavigationBar {
-
-        NavigationBarItem(
-            selected = true,
-            onClick = { },
-            icon = {
-                Icon(
-                    imageVector = Icons.Filled.Home,
-                    contentDescription = "Home"
-                )
-            },
-            label = { Text("Home") }
-        )
-
         NavigationBarItem(
             selected = false,
-            onClick = { },
-            icon = {
-                Icon(
-                    imageVector = Icons.Filled.ShoppingCart,
-                    contentDescription = "Cart"
-                )
-            },
-            label = { Text("Cart") }
+            onClick = { nav.navigate("home") },
+            label = { Text("Home") },
+            icon = {}
         )
-
         NavigationBarItem(
             selected = false,
-            onClick = { },
-            icon = {
-                Icon(
-                    imageVector = Icons.Filled.List,
-                    contentDescription = "Orders"
-                )
-            },
-            label = { Text("Orders") }
+            onClick = { nav.navigate("orders") },
+            label = { Text("Orders") },
+            icon = {}
         )
-
         NavigationBarItem(
             selected = false,
-            onClick = { },
-            icon = {
-                Icon(
-                    imageVector = Icons.Filled.AccountBalanceWallet,
-                    contentDescription = "Wallet"
-                )
-            },
-            label = { Text("Wallet") }
+            onClick = { nav.navigate("cart") },
+            label = { Text("Cart") },
+            icon = {}
         )
     }
 }

@@ -1,6 +1,6 @@
 package com.jminnovatech.enjoybazar.util
 
-import com.jminnovatech.enjoybazar.domain.model.UserRole
+import com.jminnovatech.enjoybazar.data.model.auth.UserRole
 
 fun mapRole(apiRole: String): UserRole {
     return when (apiRole.lowercase()) {

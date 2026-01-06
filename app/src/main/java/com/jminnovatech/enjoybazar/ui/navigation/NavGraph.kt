@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.*
 import com.jminnovatech.enjoybazar.core.session.SessionManager
-import com.jminnovatech.enjoybazar.domain.model.UserRole
+import com.jminnovatech.enjoybazar.data.model.auth.UserRole
 import com.jminnovatech.enjoybazar.ui.auth.LoginScreen
 import com.jminnovatech.enjoybazar.ui.home.HomeRouter
 import com.jminnovatech.enjoybazar.ui.splash.SplashScreen

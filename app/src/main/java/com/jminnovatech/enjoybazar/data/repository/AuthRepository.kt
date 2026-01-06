@@ -1,6 +1,6 @@
 import com.google.gson.Gson
 import com.jminnovatech.enjoybazar.data.remote.api.RetrofitClient
-import com.jminnovatech.enjoybazar.data.remote.model.LoginRequest
+import com.jminnovatech.enjoybazar.data.model.auth.LoginRequest
 import com.jminnovatech.enjoybazar.data.remote.model.LoginResponse
 import retrofit2.HttpException
 
