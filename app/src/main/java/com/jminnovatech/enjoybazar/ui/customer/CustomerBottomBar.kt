@@ -1,64 +1,47 @@
 package com.jminnovatech.enjoybazar.ui.customer
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBalanceWallet
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.navigation.NavController
+
+import androidx.navigation.NavHostController
 
 @Composable
-fun CustomerBottomBar() {
+fun CustomerBottomBar(nav: NavController, cartCount: Int) {
 
     NavigationBar {
 
         NavigationBarItem(
-            selected = true,
-            onClick = { },
-            icon = {
-                Icon(
-                    imageVector = Icons.Filled.Home,
-                    contentDescription = "Home"
-                )
-            },
+            selected = false,
+            onClick = { nav.navigate("home") },
+            icon = { Icon(Icons.Default.Home, null) },
             label = { Text("Home") }
         )
 
         NavigationBarItem(
             selected = false,
-            onClick = { },
-            icon = {
-                Icon(
-                    imageVector = Icons.Filled.ShoppingCart,
-                    contentDescription = "Cart"
-                )
-            },
-            label = { Text("Cart") }
-        )
-
-        NavigationBarItem(
-            selected = false,
-            onClick = { },
-            icon = {
-                Icon(
-                    imageVector = Icons.Filled.List,
-                    contentDescription = "Orders"
-                )
-            },
+            onClick = { nav.navigate("orders") },
+            icon = { Icon(Icons.Default.List, null) },
             label = { Text("Orders") }
         )
 
         NavigationBarItem(
             selected = false,
-            onClick = { },
+            onClick = { nav.navigate("cart") },
             icon = {
-                Icon(
-                    imageVector = Icons.Filled.AccountBalanceWallet,
-                    contentDescription = "Wallet"
-                )
+                BadgedBox(
+                    badge = {
+                        if (cartCount > 0) {
+                            Badge { Text(cartCount.toString()) }
+                        }
+                    }
+                ) {
+                    Icon(Icons.Default.ShoppingCart, null)
+                }
             },
-            label = { Text("Wallet") }
+            label = { Text("Cart") }
         )
     }
 }

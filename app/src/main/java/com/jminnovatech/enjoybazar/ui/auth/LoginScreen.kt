@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.jminnovatech.enjoybazar.core.session.SessionManager
 import com.jminnovatech.enjoybazar.data.remote.api.RetrofitClient
-import com.jminnovatech.enjoybazar.data.remote.model.LoginRequest
+import com.jminnovatech.enjoybazar.data.model.auth.LoginRequest
 
 
 
@@ -81,7 +81,12 @@ fun LoginScreen(navController: NavController) {
                         )
 
                         if (res.success == true) {
-                            session.saveSession(res.token!!, res.role!!)
+                            session.saveSession(
+                                userId = res.user!!.id,
+                                token = res.token!!,
+                                role = res.role!!
+                            )
+
                             navController.navigate(Routes.HOME) {
                                 popUpTo(Routes.LOGIN) { inclusive = true }
                             }

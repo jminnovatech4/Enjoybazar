@@ -1,43 +1,99 @@
 package com.jminnovatech.enjoybazar.ui.customer
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import com.jminnovatech.enjoybazar.data.model.customer.CustomerProduct
 
 @Composable
-fun ProductCard(product: ProductUI) {
-
+fun ProductCard(
+    product: CustomerProduct,
+    qty: Double,
+    onAdd: () -> Unit,
+    onRemove: () -> Unit
+) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 6.dp),
+        shape = RoundedCornerShape(14.dp),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Row(
+            modifier = Modifier.padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
 
-            Text(
-                text = product.name,
-                fontWeight = FontWeight.SemiBold,
-                style = MaterialTheme.typography.titleMedium
+            // 🖼️ PRODUCT IMAGE
+            AsyncImage(
+                model = "https://jminnovatech.xyz/${product.image}",
+                contentDescription = product.title,
+                modifier = Modifier
+                    .size(90.dp)
+                    .clip(RoundedCornerShape(12.dp))
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(Modifier.width(12.dp))
 
-            Text(
-                text = "₹ ${product.price}",
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Button(
-                onClick = { },
-                modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.small
+            // 📄 DETAILS
+            Column(
+                modifier = Modifier.weight(1f)
             ) {
-                Text("Add to Cart")
+
+                Text(
+                    product.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(Modifier.height(4.dp))
+
+                Text(
+                    "₹ ${product.sell_price} / ${product.unit}",
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.titleSmall
+                )
+
+                Spacer(Modifier.height(6.dp))
+
+                Text(
+                    "Stock: ${product.stock_qty} ${product.unit}",
+                    style = MaterialTheme.typography.bodySmall
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                // ➕➖ QTY CONTROLS
+                Row(verticalAlignment = Alignment.CenterVertically) {
+
+                    IconButton(
+                        onClick = onRemove,
+                        enabled = qty > 0
+                    ) {
+                        Icon(Icons.Default.Remove, contentDescription = "Remove")
+                    }
+
+                    Text(
+                        qty.toInt().toString(),
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    IconButton(onClick = onAdd) {
+                        Icon(Icons.Default.Add, contentDescription = "Add")
+                    }
+                }
             }
         }
     }

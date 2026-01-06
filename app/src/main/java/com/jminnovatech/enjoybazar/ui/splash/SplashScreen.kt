@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.jminnovatech.enjoybazar.core.session.SessionManager
+import com.jminnovatech.enjoybazar.data.remote.api.RetrofitClient
 
 import kotlinx.coroutines.launch
 
@@ -16,18 +17,18 @@ fun SplashScreen(navController: NavController) {
 
     val context = LocalContext.current
     val session = remember { SessionManager(context) }
-    val scope = rememberCoroutineScope()
+
+    // ✅ MUST CALL
+    RetrofitClient.init(session)
 
     LaunchedEffect(Unit) {
-        scope.launch {
-            if (session.isLoggedIn()) {
-                navController.navigate(Routes.HOME) {
-                    popUpTo(Routes.SPLASH) { inclusive = true }
-                }
-            } else {
-                navController.navigate(Routes.LOGIN) {
-                    popUpTo(Routes.SPLASH) { inclusive = true }
-                }
+        if (session.isLoggedIn()) {
+            navController.navigate(Routes.HOME) {
+                popUpTo(Routes.SPLASH) { inclusive = true }
+            }
+        } else {
+            navController.navigate(Routes.LOGIN) {
+                popUpTo(Routes.SPLASH) { inclusive = true }
             }
         }
     }
@@ -36,7 +37,7 @@ fun SplashScreen(navController: NavController) {
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Text("EnjoyBazar", style = MaterialTheme.typography.headlineLarge)
+        CircularProgressIndicator()
     }
 }
 
