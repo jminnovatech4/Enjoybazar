@@ -7,6 +7,7 @@ import com.jminnovatech.data.model.customer.CustomerCartItem
 import com.jminnovatech.data.model.customer.CustomerOrder
 import com.jminnovatech.enjoybazar.data.model.customer.CustomerOrderCreateRequest
 import com.jminnovatech.enjoybazar.data.model.customer.CustomerOrderItem
+import com.jminnovatech.enjoybazar.data.model.customer.CustomerOrderItemRequest
 
 import com.jminnovatech.enjoybazar.data.model.customer.CustomerProduct
 import com.jminnovatech.enjoybazar.data.repository.CustomerRepository
@@ -74,12 +75,14 @@ class CustomerViewModel : ViewModel() {
                 return@launch
             }
 
+            // ✅ THIS IS THE CORRECT PLACE
             val items = _cart.value.map {
-                CustomerOrderItem(
+                CustomerOrderItemRequest(
                     product_id = it.product.id,
                     qty = it.qty
                 )
             }
+
 
             val request = CustomerOrderCreateRequest(
                 buyer_name = buyerName,

@@ -1,10 +1,12 @@
 package com.jminnovatech.data.model.customer
 
+import com.jminnovatech.enjoybazar.data.model.customer.CustomerOrderItem
+
 data class CustomerOrder(
     val id: Int,
     val order_no: String,
-    val total_amount: Double,
+    val total_amount: String,
     val status: String,
     val created_at: String,
-    val image: String?   // ✅ ADD THIS
+    val items: List<CustomerOrderItem>
 )
