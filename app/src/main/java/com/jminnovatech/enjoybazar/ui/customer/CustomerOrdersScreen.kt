@@ -42,53 +42,78 @@ fun CustomerOrdersScreen(vm: CustomerViewModel) {
 
         items(orders) { order ->
 
-            val firstItem = order.items.firstOrNull()
-
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(14.dp),
+                elevation = CardDefaults.cardElevation(4.dp)
             ) {
-                Column(Modifier.padding(12.dp)) {
+                Column(modifier = Modifier.padding(14.dp)) {
 
-                    Text(
-                        text = "Order #${order.order_no}",
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    Spacer(Modifier.height(6.dp))
-
-                    // ✅ SAFE PLACEHOLDER IMAGE
-                    AsyncImage(
-                        model = "https://jminnovatech.xyz/assets/no-image.png",
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(140.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                    )
-
-                    Spacer(Modifier.height(8.dp))
-
-                    // ✅ PRODUCT NAME (FROM API)
-                    firstItem?.let {
+                    // 🔹 Header
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
                         Text(
-                            text = it.product_name,
-                            fontWeight = FontWeight.SemiBold
+                            text = "Order ${order.order_no}",
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Text(
+                            text = order.status.uppercase(),
+                            color = when (order.status) {
+                                "pending" -> Color(0xFFFF9800)
+                                "accepted" -> Color(0xFF4CAF50)
+                                else -> Color.Gray
+                            },
+                            fontWeight = FontWeight.Bold
                         )
                     }
 
-                    Spacer(Modifier.height(4.dp))
-
-                    Text("Amount: ₹${order.total_amount}")
-                    Text("Status: ${order.status}")
+                    Spacer(Modifier.height(6.dp))
 
                     Text(
-                        text = order.created_at,
+                        text = order.created_at.replace("T", " ").replace(".000000Z", ""),
                         fontSize = 12.sp,
                         color = Color.Gray
                     )
+
+                    Spacer(Modifier.height(10.dp))
+                    Divider()
+                    Spacer(Modifier.height(8.dp))
+
+                    // 🔹 ALL ITEMS
+                    order.items.forEach { item ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text("${item.product_name} × ${item.qty.toDouble().toInt()} ${item.unit}")
+                            Text("₹${item.total}")
+                        }
+                        Spacer(Modifier.height(4.dp))
+                    }
+
+                    Spacer(Modifier.height(8.dp))
+                    Divider()
+                    Spacer(Modifier.height(8.dp))
+
+                    // 🔹 TOTAL
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            "Total",
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            "₹${order.total_amount}",
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
         }

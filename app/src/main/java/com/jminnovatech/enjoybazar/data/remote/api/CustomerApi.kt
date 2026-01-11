@@ -13,8 +13,9 @@ interface CustomerApi {
 
 
 
-    @GET("customer/orders")
+    @GET("customer/my-orders")
     suspend fun getOrders(): ApiResponse<List<CustomerOrder>>
+
 
 
 

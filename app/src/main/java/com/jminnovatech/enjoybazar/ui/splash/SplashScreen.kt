@@ -18,9 +18,6 @@ fun SplashScreen(navController: NavController) {
     val context = LocalContext.current
     val session = remember { SessionManager(context) }
 
-    // ✅ MUST CALL
-    RetrofitClient.init(session)
-
     LaunchedEffect(Unit) {
         if (session.isLoggedIn()) {
             navController.navigate(Routes.HOME) {
@@ -40,5 +37,6 @@ fun SplashScreen(navController: NavController) {
         CircularProgressIndicator()
     }
 }
+
 
 
