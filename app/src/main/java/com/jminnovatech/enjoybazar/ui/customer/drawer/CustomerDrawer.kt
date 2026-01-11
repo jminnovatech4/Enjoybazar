@@ -11,36 +11,51 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun CustomerDrawer(
+    currentRoute: String?,
+    userName: String,
+    onNavigate: (String) -> Unit,
     onLogout: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxHeight()
             .width(280.dp)
-            .background(MaterialTheme.colorScheme.surface)
             .padding(16.dp)
     ) {
 
-        Text(
-            text = "👋 Hello Customer",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold
-        )
-
-        Text(
-            text = "EnjoyBazar",
-            style = MaterialTheme.typography.bodyMedium,
-            color = Color.Gray
-        )
+        Text("👋 Hello $userName", fontWeight = FontWeight.Bold)
+        Text("EnjoyBazar", color = Color.Gray)
 
         Spacer(Modifier.height(24.dp))
         Divider()
-        Spacer(Modifier.height(16.dp))
 
-        DrawerItem("🛒", "Your Cart")
-        DrawerItem("📦", "My Orders")
-        DrawerItem("🏠", "Address")
-        DrawerItem("📞", "Support")
+        DrawerItem(
+            icon = "🏠",
+            title = "Home",
+            selected = currentRoute == "home",
+            onClick = { onNavigate("home") }
+        )
+
+        DrawerItem(
+            icon = "📦",
+            title = "My Orders",
+            selected = currentRoute == "orders",
+            onClick = { onNavigate("orders") }
+        )
+
+        DrawerItem(
+            icon = "🛒",
+            title = "Cart",
+            selected = currentRoute == "cart",
+            onClick = { onNavigate("cart") }
+        )
+
+        DrawerItem(
+            icon = "🏠",
+            title = "Address",
+            selected = currentRoute == "address",
+            onClick = { onNavigate("address") }
+        )
 
         Spacer(Modifier.weight(1f))
         Divider()
@@ -49,11 +64,7 @@ fun CustomerDrawer(
             onClick = onLogout,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(
-                text = "Logout",
-                color = Color.Red,
-                fontWeight = FontWeight.Bold
-            )
+            Text("Logout", color = Color.Red)
         }
     }
 }

@@ -53,9 +53,16 @@ class CustomerViewModel : ViewModel() {
 
     fun addToCart(product: CustomerProduct) {
         val list = _cart.value.toMutableList()
-        list.add(CustomerCartItem(product = product, qty = 1.0))
+        val index = list.indexOfFirst { it.product.id == product.id }
+
+        if (index >= 0) {
+            list[index] = list[index].copy(qty = list[index].qty + 1)
+        } else {
+            list.add(CustomerCartItem(product, 1.0))
+        }
         _cart.value = list
     }
+
 
     fun clearCart() {
         _cart.value = emptyList()
@@ -106,16 +113,17 @@ class CustomerViewModel : ViewModel() {
         val list = _cart.value.toMutableList()
         val index = list.indexOfFirst { it.product.id == product.id }
 
-        if (index != -1) {
+        if (index >= 0) {
             val item = list[index]
             if (item.qty > 1) {
                 list[index] = item.copy(qty = item.qty - 1)
             } else {
                 list.removeAt(index)
             }
-            _cart.value = list
         }
+        _cart.value = list
     }
+
     fun loadOrders() {
         viewModelScope.launch {
             try {
@@ -132,6 +140,21 @@ class CustomerViewModel : ViewModel() {
             }
         }
     }
+    fun saveAddress(
+        name: String,
+        phone: String,
+        address: String
+    ) {
+        viewModelScope.launch {
+            try {
+                repo.saveCustomerAddress(name, phone, address)
+                Log.d("ADDRESS", "Saved successfully")
+            } catch (e: Exception) {
+                Log.e("ADDRESS", "Failed", e)
+            }
+        }
+    }
+
 
 
 }

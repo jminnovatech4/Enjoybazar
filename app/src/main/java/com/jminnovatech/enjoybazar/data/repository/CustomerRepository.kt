@@ -15,4 +15,17 @@ class CustomerRepository {
     suspend fun placeOrder(req: CustomerOrderCreateRequest) =
         RetrofitClient.customerApi.placeOrder(req)
 
+
+    suspend fun saveCustomerAddress(
+        name: String,
+        phone: String,
+        address: String
+    ) =
+        RetrofitClient.customerApi.saveAddress(
+            mapOf(
+                "name" to name,
+                "phone" to phone,
+                "address" to address
+            )
+        )
 }

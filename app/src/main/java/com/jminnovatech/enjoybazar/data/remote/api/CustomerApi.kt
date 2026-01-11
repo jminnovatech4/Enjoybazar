@@ -25,5 +25,10 @@ interface CustomerApi {
         @Body request: CustomerOrderCreateRequest
     ): ApiResponse<Any>
 
+    @POST("customer/address")
+    suspend fun saveAddress(
+        @Body body: Map<String, String>
+    ): ApiResponse<Any>
+
 
 }
