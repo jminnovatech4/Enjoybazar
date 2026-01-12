@@ -91,7 +91,8 @@ fun CustomerRoot(
                 composable("home") { CustomerHomeScreen(vm) }
                 composable("orders") { CustomerOrdersScreen(vm) }
                 composable("cart") { CustomerCart(vm) }
-                composable("address") { AddressScreen(vm) }
+                composable("profile") { ProfileScreen(vm) }
+
             }
         }
     }

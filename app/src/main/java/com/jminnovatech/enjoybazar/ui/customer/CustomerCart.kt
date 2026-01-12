@@ -15,87 +15,108 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jminnovatech.enjoybazar.ui.customer.vm.CustomerViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 @Composable
 fun CustomerCart(vm: CustomerViewModel) {
 
     val cart by vm.cart.collectAsState()
+    val profile by vm.profile.collectAsState()
+    val orderSuccess by vm.orderSuccess.collectAsState()
+
+    val snackbarHostState = remember { SnackbarHostState() }
 
     val total = cart.sumOf {
         it.product.sell_price * it.qty
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
+    LaunchedEffect(Unit) {
+        vm.loadProfile()
+    }
 
-        Text(
-            "🛒 My Cart",
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold
-        )
-
-        Spacer(Modifier.height(12.dp))
-
-        if (cart.isEmpty()) {
-            Text("Your cart is empty")
-            return
+    // ✅ SHOW SNACKBAR ON SUCCESS
+    LaunchedEffect(orderSuccess) {
+        if (orderSuccess) {
+            snackbarHostState.showSnackbar("✅ Order placed successfully")
+            vm.clearOrderSuccess()
         }
+    }
 
-        cart.forEach { item ->
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 6.dp)
-            ) {
-                Column(Modifier.padding(10.dp)) {
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { padding ->
 
-                    Text(item.product.title, fontWeight = FontWeight.Bold)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(16.dp)
+        ) {
 
-                    Text("₹ ${item.product.sell_price} × ${item.qty}")
+            Text(
+                "🛒 My Cart",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold
+            )
 
+            Spacer(Modifier.height(12.dp))
+
+            if (cart.isEmpty()) {
+                Text("Your cart is empty")
+                return@Column
+            }
+
+            cart.forEach { item ->
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 6.dp)
+                ) {
+                    Column(Modifier.padding(10.dp)) {
+                        Text(item.product.title, fontWeight = FontWeight.Bold)
+                        Text("₹ ${item.product.sell_price} × ${item.qty}")
+                    }
                 }
             }
-        }
 
-        Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(16.dp))
 
-        // 🔹 BILL
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant
-            )
-        ) {
-            Column(Modifier.padding(12.dp)) {
-
-                BillRow("Subtotal", total)
-                BillRow("Delivery", 0.0)
-
-                Divider(Modifier.padding(vertical = 6.dp))
-
-                BillRow("Total", total, bold = true)
-            }
-        }
-
-        Spacer(Modifier.height(16.dp))
-
-        Button(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                vm.placeOrder(
-                    buyerName = "Customer",
-                    buyerPhone = "9999999999",
-                    buyerAddress = "Kolkata"
+            // 🔹 BILL
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
                 )
+            ) {
+                Column(Modifier.padding(12.dp)) {
+                    BillRow("Subtotal", total)
+                    BillRow("Delivery", 0.0)
+
+                    Divider(Modifier.padding(vertical = 6.dp))
+
+                    BillRow("Total", total, bold = true)
+                }
             }
-        ) {
-            Text("Place Order")
+
+            Spacer(Modifier.height(16.dp))
+
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    vm.placeOrder(
+                        buyerName = profile?.name ?: "Customer",
+                        buyerPhone = profile?.phone ?: "",
+                        buyerAddress = profile?.address ?: ""
+                    )
+                }
+            ) {
+                Text("Place Order")
+            }
         }
     }
 }
+
 
 @Composable
 fun BillRow(

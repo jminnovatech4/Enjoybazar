@@ -52,10 +52,10 @@ fun CustomerDrawer(
         )
 
         DrawerItem(
-            icon = "🏠",
-            title = "Address",
-            selected = currentRoute == "address",
-            onClick = { onNavigate("address") }
+            icon = "👤",
+            title = "Profile",
+            selected = currentRoute == "profile",
+            onClick = { onNavigate("profile") }
         )
 
         Spacer(Modifier.weight(1f))

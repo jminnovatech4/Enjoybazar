@@ -4,6 +4,7 @@ import com.jminnovatech.data.model.customer.CustomerOrder
 import com.jminnovatech.enjoybazar.data.model.common.ApiResponse
 import com.jminnovatech.enjoybazar.data.model.customer.CustomerOrderCreateRequest
 import com.jminnovatech.enjoybazar.data.model.customer.CustomerProduct
+import com.jminnovatech.enjoybazar.data.model.customer.CustomerProfile
 import retrofit2.http.*
 
 interface CustomerApi {
@@ -30,5 +31,13 @@ interface CustomerApi {
         @Body body: Map<String, String>
     ): ApiResponse<Any>
 
+    // -------- PROFILE --------
 
+    @GET("customer/profile")
+    suspend fun getCustomerProfile(): ApiResponse<CustomerProfile>
+
+    @POST("customer/profile/update")
+    suspend fun updateCustomerProfile(
+        @Body body: Map<String, String>
+    ): ApiResponse<Any>
 }
