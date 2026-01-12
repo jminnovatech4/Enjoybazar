@@ -19,6 +19,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.jminnovatech.enjoybazar.ui.customer.vm.CustomerViewModel
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,31 +31,23 @@ fun CustomerHomeScreen(vm: CustomerViewModel) {
     val cart by vm.cart.collectAsState()
 
     var search by remember { mutableStateOf("") }
+    var refreshing by remember { mutableStateOf(false) }
 
-    // ✅ MUST load products
+    // ✅ Load products first time
     LaunchedEffect(Unit) {
         vm.loadProducts()
     }
 
-    // ✅ SEARCH FILTER (SAFE)
+    // ✅ Search filter
     val filteredProducts = remember(products, search) {
-        if (search.isBlank()) {
-            products
-        } else {
-            products.filter {
-                it.title.contains(search, ignoreCase = true)
-            }
+        if (search.isBlank()) products
+        else products.filter {
+            it.title.contains(search, ignoreCase = true)
         }
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
 
-        // 🔝 TOP BAR
-
-
-        // 🔍 SEARCH
         OutlinedTextField(
             value = search,
             onValueChange = { search = it },
@@ -65,12 +60,9 @@ fun CustomerHomeScreen(vm: CustomerViewModel) {
 
         Spacer(Modifier.height(8.dp))
 
-        // ❗ VERY IMPORTANT
         if (filteredProducts.isEmpty()) {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(24.dp),
+                modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
                 Text("No products found")
@@ -78,24 +70,35 @@ fun CustomerHomeScreen(vm: CustomerViewModel) {
             return
         }
 
-        // ✅ PRODUCT LIST
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(12.dp)
+        // ✅ PULL TO REFRESH
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(isRefreshing = refreshing),
+            onRefresh = {
+                refreshing = true
+                vm.loadProducts()
+                refreshing = false
+            }
         ) {
-            items(filteredProducts) { product ->
 
-                val qty = cart
-                    .find { it.product.id == product.id }
-                    ?.qty ?: 0.0
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(12.dp)
+            ) {
+                items(filteredProducts) { product ->
 
-                ProductCard(
-                    product = product,
-                    qty = qty,
-                    onAdd = { vm.addToCart(product) },
-                    onRemove = { vm.removeFromCart(product) }
-                )
+                    val qty = cart
+                        .find { it.product.id == product.id }
+                        ?.qty ?: 0.0
+
+                    ProductCard(
+                        product = product,
+                        qty = qty,
+                        onAdd = { vm.addToCart(product) },
+                        onRemove = { vm.removeFromCart(product) }
+                    )
+                }
             }
         }
     }
 }
+

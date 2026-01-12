@@ -9,16 +9,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
-import com.google.gson.Gson
-import com.jminnovatech.enjoybazar.data.model.customer.DeliveryInfo
 import com.jminnovatech.enjoybazar.ui.customer.vm.CustomerViewModel
-import androidx.compose.foundation.layout.Arrangement
+
+
 @Composable
 fun CustomerOrdersScreen(vm: CustomerViewModel) {
 
@@ -29,11 +26,8 @@ fun CustomerOrdersScreen(vm: CustomerViewModel) {
     }
 
     if (orders.isEmpty()) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text("No orders found")
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("No orders yet", color = Color.Gray)
         }
         return
     }
@@ -50,40 +44,142 @@ fun CustomerOrdersScreen(vm: CustomerViewModel) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp)
+                    .padding(vertical = 6.dp)
                     .clickable { expanded = !expanded },
-                shape = RoundedCornerShape(14.dp)
+                shape = RoundedCornerShape(18.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                ),
+                elevation = CardDefaults.cardElevation(4.dp)
             ) {
 
-                Column(Modifier.padding(12.dp)) {
+                Column(Modifier.padding(16.dp)) {
 
-                    Text("Order #${order.order_no}", fontWeight = FontWeight.Bold)
+                    // 🔹 HEADER
+                    Row(
+                        Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
 
-                    Text("₹ ${order.total_amount}  •  ${order.status}")
+                        Column {
+                            Text(
+                                "Order #${order.order_no}",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                            Text(
+                                "₹ ${order.total_amount}",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
 
+                        StatusBadge(order.status)
+                    }
+
+                    if (!expanded) {
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            "Tap to view details",
+                            fontSize = 12.sp,
+                            color = Color.Gray
+                        )
+                    }
+
+                    // 🔽 EXPANDED CONTENT
                     if (expanded) {
 
-                        Spacer(Modifier.height(8.dp))
+                        Spacer(Modifier.height(12.dp))
                         Divider()
+                        Spacer(Modifier.height(10.dp))
 
                         order.items.forEach { item ->
                             Row(
-                                Modifier.fillMaxWidth(),
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 3.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Text("${item.product_name} (${item.qty} ${item.unit})")
-                                Text("₹${item.total}")
+                                Text(
+                                    "${item.product_name} (${item.qty} ${item.unit})",
+                                    fontSize = 14.sp
+                                )
+                                Text(
+                                    "₹${item.total}",
+                                    fontWeight = FontWeight.Medium
+                                )
                             }
                         }
 
-
+                        Spacer(Modifier.height(10.dp))
+                        Divider()
                         Spacer(Modifier.height(6.dp))
-                        Text(order.created_at, fontSize = 12.sp, color = Color.Gray)
+
+                        Text(
+                            formatDate(order.created_at),
+                            fontSize = 12.sp,
+                            color = Color.Gray
+                        )
                     }
                 }
             }
         }
+    }
+}
 
 
+@Composable
+fun StatusChip(status: String) {
+
+    val color = when (status.lowercase()) {
+        "pending" -> Color(0xFFFFA000)
+        "delivered" -> Color(0xFF2E7D32)
+        "cancelled" -> Color(0xFFC62828)
+        else -> Color.Gray
+    }
+
+    Surface(
+        color = color.copy(alpha = 0.12f),
+        shape = RoundedCornerShape(50)
+    ) {
+        Text(
+            text = status.uppercase(),
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold,
+            color = color
+        )
+    }
+}
+fun formatDate(raw: String): String {
+    // Example: 2026-01-12T15:14:07.000000Z
+    return try {
+        raw.substring(0, 10) + " · " + raw.substring(11, 16)
+    } catch (e: Exception) {
+        raw
+    }
+}
+@Composable
+fun StatusBadge(status: String) {
+
+    val (bg, textColor) = when (status.lowercase()) {
+        "pending" -> Color(0xFFFFF3CD) to Color(0xFF856404)
+        "delivered" -> Color(0xFFE6F4EA) to Color(0xFF2E7D32)
+        "cancelled" -> Color(0xFFFDECEA) to Color(0xFFC62828)
+        else -> Color.LightGray to Color.DarkGray
+    }
+
+    Surface(
+        color = bg,
+        shape = RoundedCornerShape(50)
+    ) {
+        Text(
+            status.uppercase(),
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+            fontSize = 11.sp,
+            fontWeight = FontWeight.Bold,
+            color = textColor
+        )
     }
 }

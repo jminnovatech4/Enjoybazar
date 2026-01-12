@@ -70,6 +70,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.runtime)
+    implementation(libs.androidx.compose.ui.text)
     debugImplementation("androidx.compose.ui:ui-tooling")
     implementation("androidx.compose.material:material-icons-extended")
 
@@ -105,4 +106,6 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.34.0")
+
 }

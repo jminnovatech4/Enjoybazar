@@ -1,6 +1,5 @@
 package com.jminnovatech.enjoybazar.ui.customer
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -11,8 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.jminnovatech.enjoybazar.data.model.customer.CustomerProduct
 
@@ -28,42 +30,76 @@ fun ProductCard(
             .fillMaxWidth()
             .padding(vertical = 6.dp),
         shape = RoundedCornerShape(14.dp),
-        elevation = CardDefaults.cardElevation(4.dp)
+        elevation = CardDefaults.cardElevation(3.dp)
     ) {
         Row(
             modifier = Modifier.padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            // 🖼️ PRODUCT IMAGE
             AsyncImage(
                 model = "https://jminnovatech.xyz/${product.image}",
                 contentDescription = product.title,
                 modifier = Modifier
                     .size(90.dp)
-                    .clip(RoundedCornerShape(12.dp))
+                    .clip(RoundedCornerShape(10.dp))
             )
 
             Spacer(Modifier.width(12.dp))
 
-            // 📄 DETAILS
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
+            Column(modifier = Modifier.weight(1f)) {
 
+                // 🔹 TITLE
                 Text(
                     product.title,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 2
                 )
 
-                Spacer(Modifier.height(4.dp))
+                // 🔹 DESCRIPTION (ONLY IF DB HAS IT)
+                product.description?.let {
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        it,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 2
+                    )
+                }
 
-                Text(
-                    "₹ ${product.sell_price} / ${product.unit}",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.titleSmall
-                )
+                Spacer(Modifier.height(6.dp))
+
+                // 💰 PRICE ROW (REAL DATA)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+
+                    Text(
+                        "₹ ${product.sell_price}",
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    // 🔹 MRP (REAL)
+                    product.mrp?.let {
+                        Spacer(Modifier.width(6.dp))
+                        Text(
+                            "₹ $it",
+                            style = MaterialTheme.typography.bodySmall,
+                            textDecoration = TextDecoration.LineThrough,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+
+                    // 🔹 DISCOUNT (REAL)
+                    product.discount_percent?.let {
+                        Spacer(Modifier.width(6.dp))
+                        Text(
+                            "$it% OFF",
+                            color = MaterialTheme.colorScheme.error,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 12.sp
+                        )
+                    }
+                }
 
                 Spacer(Modifier.height(6.dp))
 
@@ -74,7 +110,7 @@ fun ProductCard(
 
                 Spacer(Modifier.height(8.dp))
 
-                // ➕➖ QTY CONTROLS
+                // ➕➖ ADD / REMOVE (UNCHANGED)
                 Row(verticalAlignment = Alignment.CenterVertically) {
 
                     IconButton(
@@ -86,8 +122,8 @@ fun ProductCard(
 
                     Text(
                         qty.toInt().toString(),
-                        modifier = Modifier.padding(horizontal = 8.dp),
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 6.dp)
                     )
 
                     IconButton(onClick = onAdd) {
