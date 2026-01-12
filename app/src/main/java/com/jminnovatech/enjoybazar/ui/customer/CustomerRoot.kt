@@ -54,13 +54,12 @@ fun CustomerRoot(
                 },
 
                 onLogout = {
-                    session.clear()
-                    navController.navigate(Routes.LOGIN) {
-                        popUpTo(Routes.HOME) { inclusive = true }
-                    }
+                    onLogout() // 🔥 parent কে জানাও
                 }
 
+
             )
+
         }
     )
     {

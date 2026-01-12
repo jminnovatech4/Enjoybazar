@@ -18,21 +18,31 @@ fun HomeRouter(
             CustomerRoot(
                 onLogout = {
                     sessionManager.clear()
-                    // চাইলে future এ root navigation handle করবেন
+
+                    navController.navigate(Routes.LOGIN) {
+                        popUpTo(0)
+                    }
                 }
             )
         }
 
-        UserRole.COMPANY -> {
-            CompanyHome()
-        }
 
         UserRole.DISTRIBUTOR -> {
-            DistributorHome()
+            DistributorHome(
+
+            )
+        }
+
+        UserRole.COMPANY -> {
+            CompanyHome(
+
+            )
         }
 
         UserRole.EXECUTIVE -> {
-            ExecutiveHome()
+            ExecutiveHome(
+
+            )
         }
 
         else -> {
