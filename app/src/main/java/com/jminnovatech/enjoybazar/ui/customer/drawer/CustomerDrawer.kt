@@ -20,6 +20,7 @@ fun CustomerDrawer(
         modifier = Modifier
             .fillMaxHeight()
             .width(280.dp)
+            .background(MaterialTheme.colorScheme.surface) // ✅ THIS LINE
             .padding(16.dp)
     ) {
 

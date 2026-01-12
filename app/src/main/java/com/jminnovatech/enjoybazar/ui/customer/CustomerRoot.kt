@@ -17,7 +17,9 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomerRoot() {
+fun CustomerRoot(
+    onLogout: () -> Unit
+) {
 
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -27,16 +29,14 @@ fun CustomerRoot() {
     val session = remember { SessionManager(context) }
     val userName = session.getUserName() ?: "Customer"
 
-    // 🔹 Shared ViewModel
     val vm: CustomerViewModel = viewModel()
-    val cart by vm.cart.collectAsState()
-    // 🔙 Back closes drawer
+
     BackHandler(drawerState.isOpen) {
         scope.launch { drawerState.close() }
     }
 
-    val currentBackStack by navController.currentBackStackEntryAsState()
-    val currentRoute = currentBackStack?.destination?.route
+    val currentRoute =
+        navController.currentBackStackEntryAsState().value?.destination?.route
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -44,21 +44,26 @@ fun CustomerRoot() {
             CustomerDrawer(
                 currentRoute = currentRoute,
                 userName = userName,
+
                 onNavigate = { route ->
                     navController.navigate(route) {
                         launchSingleTop = true
+                        restoreState = true
                     }
                     scope.launch { drawerState.close() }
                 },
+
                 onLogout = {
                     session.clear()
-                    navController.navigate("login") {
-                        popUpTo("home") { inclusive = true }
+                    navController.navigate(Routes.LOGIN) {
+                        popUpTo(Routes.HOME) { inclusive = true }
                     }
                 }
+
             )
         }
-    ) {
+    )
+    {
 
         Scaffold(
             topBar = {
@@ -68,16 +73,13 @@ fun CustomerRoot() {
                         IconButton(onClick = {
                             scope.launch { drawerState.open() }
                         }) {
-                            Icon(Icons.Default.Menu, contentDescription = null)
+                            Icon(Icons.Default.Menu, contentDescription = "Menu")
                         }
                     }
                 )
             },
             bottomBar = {
-                CustomerBottomBar(
-                    nav = navController,
-                    cartCount = cart.size
-                )
+                CustomerBottomBar(navController, vm.cart.collectAsState().value.size)
             }
         ) { padding ->
 
@@ -86,6 +88,7 @@ fun CustomerRoot() {
                 startDestination = "home",
                 modifier = Modifier.padding(padding)
             ) {
+
                 composable("home") { CustomerHomeScreen(vm) }
                 composable("orders") { CustomerOrdersScreen(vm) }
                 composable("cart") { CustomerCart(vm) }

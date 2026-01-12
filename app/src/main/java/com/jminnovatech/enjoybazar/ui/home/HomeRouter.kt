@@ -15,7 +15,12 @@ fun HomeRouter(
     when (role) {
 
         UserRole.CUSTOMER -> {
-            CustomerRoot() // ✅ OK (session দরকার নেই)
+            CustomerRoot(
+                onLogout = {
+                    sessionManager.clear()
+                    // চাইলে future এ root navigation handle করবেন
+                }
+            )
         }
 
         UserRole.COMPANY -> {

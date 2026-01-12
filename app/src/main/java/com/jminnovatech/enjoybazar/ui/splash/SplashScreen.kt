@@ -30,6 +30,7 @@ fun SplashScreen(navController: NavController) {
         }
     }
 
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
